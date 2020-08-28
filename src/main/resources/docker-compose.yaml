@@ -1,0 +1,53 @@
+#
+# Copyright 2019-2020 Aitu Software Limited.
+#
+# https://aitusoftware.com
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+version: '3'
+services:
+  influxdb:
+    image: influxdb:1.7
+    environment:
+      INFLUXDB_DB: 'babl_metrics'
+      INFLUXDB_HTTP_AUTH_ENABLED: 'true'
+      INFLUXDB_ADMIN_USER: 'admin'
+      INFLUXDB_ADMIN_PASSWORD: 'admin_pass'
+      INFLUXDB_READ_USER: 'grafana'
+      INFLUXDB_READ_USER_PASSWORD: 'grafana_pass'
+      INFLUXDB_WRITE_USER: 'babl_micrometer'
+      INFLUXDB_WRITE_USER_PASSWORD: 'babl_micrometer_pass'
+    networks:
+      mgt:
+        ipv4_address: 172.30.2.2
+    ports:
+      - "8086:8086"
+
+  grafana:
+    image: grafana/grafana
+    networks:
+      mgt:
+        ipv4_address: 172.30.2.3
+    ports:
+      - "3000:3000"
+
+networks:
+  mgt:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: 'false'
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.2.0/16

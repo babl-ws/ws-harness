@@ -1,0 +1,58 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+}
+
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'java'
+    id 'application'
+    id 'net.minecrell.licenser' version '0.4.1'
+}
+
+defaultTasks('clean', 'check', 'assemble', 'shadowJar')
+
+group = 'com.aitusoftware'
+version = '0.1.0'
+
+repositories {
+    jcenter()
+    mavenLocal()
+    flatDir {
+        dirs 'lib'
+    }
+}
+
+apply plugin: 'checkstyle'
+
+dependencies {
+    implementation 'com.aitusoftware:babl:0.6.0'
+    implementation 'io.aeron:aeron-driver:1.29.0'
+    implementation 'org.agrona:agrona:1.6.0'
+    implementation 'io.vertx:vertx-core:3.9.1'
+    implementation 'io.vertx:vertx-web:3.9.1'
+    implementation 'org.hdrhistogram:HdrHistogram:2.1.12'
+    implementation 'org.awaitility:awaitility:4.0.3'
+    implementation 'com.caucho:resin:4.0.63'
+    implementation 'com.lmax:disruptor:3.4.2'
+    implementation 'net.openhft:affinity:3.2.3'
+}
+
+application {
+    mainClassName = 'com.aitusoftware.ws.benchmark.LatencyTestMain'
+}
+
+shadowJar {
+    mainClassName = 'com.aitusoftware.ws.benchmark.LatencyTestMain'
+}
+
+checkstyle {
+    toolVersion = '8.20'
+}
+
+license {
+    header = new File(rootDir, 'config/header.txt')
+    newLine = false
+}
